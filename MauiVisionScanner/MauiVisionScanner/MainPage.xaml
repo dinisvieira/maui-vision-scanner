@@ -1,43 +1,45 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
+
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:mobile="clr-namespace:BarcodeScanner.Mobile;assembly=BarcodeScanner.Mobile.Maui"
+             xmlns:mauiVisionScanner="clr-namespace:MauiVisionScanner"
              x:Class="MauiVisionScanner.MainPage">
+    <ContentPage.Content>
+        <Grid RowDefinitions="*, 20, Auto" Margin="20">
+            <CollectionView x:Name="BarcodeCollection"
+                            SelectionMode="Single"
+                            SelectionChanged="BarcodeCollection_OnSelectionChanged">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="2"
+                                   Text="{Binding BarcodeResult.BarcodeType}"
+                                   FontAttributes="Bold" />
+                            <Label Grid.Row="1"
+                                   Grid.Column="2"
+                                   Text="{Binding BarcodeResult.DisplayValue}"
+                                   FontAttributes="Italic"
+                                   VerticalOptions="End" />
 
-    <Grid VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="2" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-
-        <mobile:CameraView VerticalOptions="Fill" HorizontalOptions="Fill" Grid.Row="0" Grid.RowSpan="5"
-                           OnDetected="Camera_OnOnDetected"
-                       IsScanning="False" CameraFacing="Back" 
-                       TorchOn="False" VibrationOnDetected="True" ScanInterval="500"
-                       x:Name="Camera" />
-
-        <BoxView Grid.Row="0" BackgroundColor="#88000000" VerticalOptions="Fill" HorizontalOptions="Fill"/>
-
-        <Label Grid.Row="0" VerticalOptions="Center" HorizontalOptions="Center" Text="Scan QR Code" TextColor="White"/>
-
-        <BoxView Grid.Row="2" HorizontalOptions="Fill" BackgroundColor="Red" />
-
-        <BoxView Grid.Row="4" BackgroundColor="#88000000" VerticalOptions="Fill" HorizontalOptions="Fill"/>
-
-        <Button Grid.Row="4"
-                Text="&#xf0244;"
-                HorizontalOptions="End"
-                VerticalOptions="End"
-                Margin="0,0,10,10"
-                FontSize="30"
-                FontFamily="{StaticResource IconFont}"
-                CornerRadius="30"
-                WidthRequest="60"
-                HeightRequest="60"
-                Clicked="FlashButton_OnClicked"/>
-    </Grid>
-
+                            <Label Grid.Row="0" Grid.RowSpan="2" Grid.Column="0"
+                                    IsVisible="{Binding IsLink}"
+                                    Text="{Binding FontIconText}"
+                                    FontSize="30"
+                                    FontFamily="{StaticResource IconFont}" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            <Button Grid.Row="2" Text="Scan QR Code" Clicked="ScanQRCodeButton_OnClicked" />
+		</Grid>
+    </ContentPage.Content>
 </ContentPage>
