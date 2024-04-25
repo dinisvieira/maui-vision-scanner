@@ -1,0 +1,2 @@
+﻿Ordenar lista por datas
+Ver se item já está na lista, se sim colocar no topo e abrir na mesma a ActionSheet mas não duplicar item na lista
