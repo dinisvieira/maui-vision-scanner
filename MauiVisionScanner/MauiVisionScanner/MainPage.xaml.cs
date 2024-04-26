@@ -86,17 +86,17 @@ public partial class MainPage : ContentPage
         }
         else if (action == shareAction)
         {
+            var title = aux.IsFood ? "Menu" : aux.BarcodeResult.BarcodeType.ToString();
             if (aux.IsLink)
             {
                 await Share.Default.RequestAsync(new ShareTextRequest
                 {
                     Text = aux.BarcodeResult.DisplayValue,
-                    Title = aux.BarcodeResult.DisplayValue
+                    Title = title
                 });
             }
             else
             {
-                var title = aux.IsSushi ? "Menu Sushi" : aux.BarcodeResult.DisplayValue;
                 await Share.RequestAsync(new ShareTextRequest
                 {
                     Uri = aux.BarcodeResult.DisplayValue,

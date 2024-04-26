@@ -12,7 +12,7 @@ namespace MauiVisionScanner
         {
             get
             {
-                if (IsSushi)
+                if (IsFood)
                 {
                     return "\U000F04A6";
                 }
@@ -41,11 +41,13 @@ namespace MauiVisionScanner
             }
         }
 
-        public bool IsSushi
+        public bool IsFood
         {
             get
             {
-                if (!string.IsNullOrWhiteSpace(BarcodeResult.DisplayValue) && BarcodeResult.DisplayValue.Equals("https://qrty.io/f5V_xa"))
+                var daruma = "https://qrty.io/f5V_xa";
+                var coreano = "https://qrco.de/beCQMF";
+                if (!string.IsNullOrWhiteSpace(BarcodeResult.DisplayValue) && (BarcodeResult.DisplayValue.Equals(daruma) || BarcodeResult.DisplayValue.Equals(coreano)))
                 {
                     return true;
                 }
@@ -58,7 +60,10 @@ namespace MauiVisionScanner
         {
             get
             {
-                return int.TryParse("123", out _);
+                var value = BarcodeResult.DisplayValue;
+                var isNumberLong = long.TryParse(value, out _);
+                var isNumberDouble = double.TryParse(value, out _);
+                return isNumberLong || isNumberDouble;
             }
         }
     }
