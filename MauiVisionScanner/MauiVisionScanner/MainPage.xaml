@@ -22,7 +22,7 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <Label Grid.Column="2"
-                                   Text="{Binding BarcodeResult.BarcodeType}"
+                                   Text="{Binding Title}"
                                    FontAttributes="Bold" />
                             <Label Grid.Row="1"
                                    Grid.Column="2"

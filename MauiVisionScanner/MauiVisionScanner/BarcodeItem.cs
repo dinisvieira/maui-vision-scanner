@@ -4,9 +4,42 @@ namespace MauiVisionScanner
 {
     internal class BarcodeItem
     {
+        private string _daruma = "https://qrty.io/f5V_xa";
+        private string _coreano = "https://qrco.de/beCQMF";
+
         public Guid Id { get; set; }
         public DateTime DateTime { get; set; }
         public BarcodeResult BarcodeResult { get; set; }
+
+        public string Title
+        {
+            get
+            {
+                if (IsFood)
+                {
+                    if (BarcodeResult.DisplayValue == _daruma)
+                    {
+                        return "Menu Daruma";
+                    }
+                    else if (BarcodeResult.DisplayValue == _coreano)
+                    {
+                        return "Menu Coreano";
+                    }
+                    else
+                    {
+                        return "Menu";
+                    }
+                }
+                else if (IsLink)
+                {
+                    return "Link";
+                }
+                else
+                {
+                    return BarcodeResult.BarcodeType.ToString();
+                }
+            }
+        }
 
         public string FontIconText
         {
@@ -45,9 +78,7 @@ namespace MauiVisionScanner
         {
             get
             {
-                var daruma = "https://qrty.io/f5V_xa";
-                var coreano = "https://qrco.de/beCQMF";
-                if (!string.IsNullOrWhiteSpace(BarcodeResult.DisplayValue) && (BarcodeResult.DisplayValue.Equals(daruma) || BarcodeResult.DisplayValue.Equals(coreano)))
+                if (!string.IsNullOrWhiteSpace(BarcodeResult.DisplayValue) && (BarcodeResult.DisplayValue.Equals(_daruma) || BarcodeResult.DisplayValue.Equals(_coreano)))
                 {
                     return true;
                 }

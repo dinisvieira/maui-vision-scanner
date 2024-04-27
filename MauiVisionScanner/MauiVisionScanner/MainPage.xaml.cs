@@ -35,6 +35,7 @@ public partial class MainPage : ContentPage
             var aux = JsonConvert.DeserializeObject<List<BarcodeItem>>(currentScanResultsStr);
             if (aux != null)
             {
+                aux = aux.OrderByDescending(x => x.DateTime).ToList();
                 BarcodeCollection.ItemsSource = new ObservableCollection<BarcodeItem>(aux);
             }
             else
@@ -48,6 +49,7 @@ public partial class MainPage : ContentPage
         }
 
         var lastScanResultStr = Preferences.Default.Get("LastScanResult", string.Empty);
+        Preferences.Default.Remove("LastScanResult");
         if (!string.IsNullOrWhiteSpace(lastScanResultStr))
         {
             var aux = JsonConvert.DeserializeObject<BarcodeItem>(lastScanResultStr);
@@ -56,24 +58,27 @@ public partial class MainPage : ContentPage
                 await ShowActions(aux);
             }
         }
-        Preferences.Default.Remove("LastScanResult");
     }
 
     private async Task ShowActions(BarcodeItem aux)
     {
-        var openAction = "Abrir Link";
+        var openAction = "-> Abrir Link <-";
         var copyAction = "Copiar";
         var shareAction = "Partilhar";
         var deleteAction = "Apagar";
 
         string action = string.Empty;
-        if (aux.IsLink)
+        if (aux.IsFood)
         {
-            action = await DisplayActionSheet("QR Code:", "Cancelar", deleteAction, openAction, copyAction, shareAction);
+            action = await DisplayActionSheet(aux.Title, "Cancelar", deleteAction, openAction, copyAction, shareAction);
+        }
+        else if (aux.IsLink)
+        {
+            action = await DisplayActionSheet($"Link: {aux.BarcodeResult.DisplayValue}", "Cancelar", deleteAction, openAction, copyAction, shareAction);
         }
         else
         {
-            action = await DisplayActionSheet("QR Code:", "Cancelar", deleteAction, copyAction, shareAction);
+            action = await DisplayActionSheet($"{aux.BarcodeResult.BarcodeType}: {aux.BarcodeResult.DisplayValue}", "Cancelar", deleteAction, copyAction, shareAction);
         }
 
         if (action == openAction)

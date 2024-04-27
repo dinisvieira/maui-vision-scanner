@@ -1,5 +1,6 @@
 ﻿using BarcodeScanner.Mobile;
 using Newtonsoft.Json;
+using System.Runtime.Intrinsics.X86;
 
 namespace MauiVisionScanner
 {
@@ -51,19 +52,41 @@ namespace MauiVisionScanner
                         }
                     }
 
-                    var newBarcodeItem = new BarcodeItem()
-                    {
-                        Id = Guid.NewGuid(),
-                        DateTime = DateTime.Now,
-                        BarcodeResult = firstScannerResult
-                    };
-                    currentScanResults.Add(newBarcodeItem);
+                    var existingItem = currentScanResults.FirstOrDefault(x =>
+                        x.BarcodeResult.DisplayValue == firstScannerResult.DisplayValue
+                        && x.BarcodeResult.RawValue == firstScannerResult.RawValue
+                        && x.BarcodeResult.BarcodeType == firstScannerResult.BarcodeType
+                        && x.BarcodeResult.BarcodeFormat == firstScannerResult.BarcodeFormat);
 
-                    var itemJsonToSave = JsonConvert.SerializeObject(newBarcodeItem);
-                    var listJsonToSave = JsonConvert.SerializeObject(currentScanResults);
+                    if (existingItem != null)
+                    { //Existing Item
+                        currentScanResults.Remove(existingItem);
+                        existingItem.DateTime = DateTime.Now;
 
-                    Preferences.Default.Set("ScanResults", listJsonToSave);
-                    Preferences.Default.Set("LastScanResult", itemJsonToSave);
+                        currentScanResults.Add(existingItem);
+
+                        var itemJsonToSave = JsonConvert.SerializeObject(existingItem);
+                        var listJsonToSave = JsonConvert.SerializeObject(currentScanResults);
+
+                        Preferences.Default.Set("ScanResults", listJsonToSave);
+                        Preferences.Default.Set("LastScanResult", itemJsonToSave);
+                    }
+                    else
+                    { //New Item
+                        var newBarcodeItem = new BarcodeItem()
+                        {
+                            Id = Guid.NewGuid(),
+                            DateTime = DateTime.Now,
+                            BarcodeResult = firstScannerResult
+                        };
+                        currentScanResults.Add(newBarcodeItem);
+
+                        var itemJsonToSave = JsonConvert.SerializeObject(newBarcodeItem);
+                        var listJsonToSave = JsonConvert.SerializeObject(currentScanResults);
+
+                        Preferences.Default.Set("ScanResults", listJsonToSave);
+                        Preferences.Default.Set("LastScanResult", itemJsonToSave);
+                    }
 
                     Camera.IsScanning = false;
                     Camera.TorchOn = false;
